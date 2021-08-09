@@ -4,13 +4,13 @@ on: push
 
 jobs:
   check_format:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-elixir@v1
         with:
           otp-version: '24.0'
-          elixir-version: '1.12'
+          elixir-version: '1.12.2'
       - uses: actions/cache@v2
         env:
           cache-name: cache-elixir-deps
