@@ -107,8 +107,8 @@ jobs:
       - name: ==> Tests
         run: mix coveralls.json
       - uses: codecov/codecov-action@v1
-          with:
-            token: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
     services:
       pg:
         image: postgres:12
