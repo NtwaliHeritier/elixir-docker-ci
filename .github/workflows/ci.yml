@@ -1,0 +1,122 @@
+name: CI
+
+on: pull_request
+
+jobs:
+  check_format:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: '24.0'
+          elixir-version: '1.12.2'
+      - uses: actions/cache@v2
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: |
+            deps
+            _build
+
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            {{ runner.os }}-build-${{ env.cache-name }}
+            {{ runner.os }}-build-
+            {{ runner.os }}-
+      - name: Fetch Deps
+        run: mix deps.get
+      - name: ==> Check Format
+        run: mix format --check-formatted 
+
+  lint:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: '24.0'
+          elixir-version: '1.12.2'
+      - uses: actions/cache@v2
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: |
+            deps
+            _build
+
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            {{ runner.os }}-build-${{ env.cache-name }}
+            {{ runner.os }}-build-
+            {{ runner.os }}-
+      - name: Fetch Deps
+        run: mix deps.get
+      - name: ==> Credo validations
+        run: mix credo --strict
+
+  security:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: '24.0'
+          elixir-version: '1.12.2'
+      - uses: actions/cache@v2
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: |
+            deps
+            _build
+
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            {{ runner.os }}-build-${{ env.cache-name }}
+            {{ runner.os }}-build-
+            {{ runner.os }}-
+      - name: Fetch Deps
+        run: mix deps.get
+      - name: ==> Sobelow security
+        run: mix sobelow --config         
+
+  test:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-elixir@v1
+        with:
+          otp-version: '24.0'
+          elixir-version: '1.12.2'
+      - uses: actions/cache@v2
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: |
+            deps
+            _build
+
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            {{ runner.os }}-build-${{ env.cache-name }}
+            {{ runner.os }}-build-
+            {{ runner.os }}-
+      - name: Fetch Deps
+        run: mix deps.get
+      - name: ==> Tests
+        run: mix coveralls.json
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+    services:
+      pg:
+        image: postgres:12
+        ports: ['5432:5432']
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5   

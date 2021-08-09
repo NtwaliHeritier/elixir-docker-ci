@@ -1,0 +1,33 @@
+version: '3.7'
+services:
+    db:
+      image: postgres:alpine
+      container_name: postgres_container
+      environment:
+        POSTGRES_USER: 'postgres'
+        POSTGRES_PASSWORD: 'hatsor'
+        POSTGRES_DB: 'crud_dev'
+      volumes:
+        - ./pgdata:/var/lib/postgresql/data
+      networks:
+        - my_network
+      restart: always
+  
+    api:
+      image: phx_app:latest
+      container_name: phx_app_container
+      command: /bin/sh docker_start.sh
+      environment:
+        PG_HOST: db
+      volumes:
+        - ./:/app
+      depends_on:
+        - db
+      networks:
+        - my_network
+      ports:
+        - 4000:4000
+      restart: always
+  
+networks:
+  my_network:
