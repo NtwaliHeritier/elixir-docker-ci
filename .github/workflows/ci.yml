@@ -119,4 +119,4 @@ jobs:
           --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
-          --health-reetries 5   
+          --health-retries 5   
