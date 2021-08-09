@@ -5,7 +5,7 @@ config :crud, Crud.Repo,
   username: "hatsor",
   password: "hatsor",
   database: "crud_dev",
-  hostname: "db",
+  hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
