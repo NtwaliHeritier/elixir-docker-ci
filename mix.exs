@@ -10,7 +10,15 @@ defmodule Crud.MixProject do
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: {
+        coveralls: :test,
+        "coveralls.details": :test,
+        "coveralls.post": :test,
+        "coveralls.json": :test,
+        "coveralls.html": :test,
+        }
     ]
   end
 
@@ -46,7 +54,8 @@ defmodule Crud.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:credo, "~> 1.5", only: :dev, runtime: false},
-      {:sobelow, "~> 0.11.1"}
+      {:sobelow, "~> 0.11.1"},
+      {:excoveralls, "~> 0.14.2"}
     ]
   end
 
